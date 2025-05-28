@@ -11,7 +11,8 @@ services:
       - "3000:3000"
     env_file:
       - .env
-    depends_on: []
+    networks:
+      - app_network
 
   frontend:
     build:
@@ -27,4 +28,9 @@ services:
       - .env
     depends_on:
       - server
+    networks:
+      - app_network
 
+networks:
+  app_network:
+    driver: bridge
