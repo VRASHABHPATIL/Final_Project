@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   server:
-    build:
-      context: .
-      dockerfile: server/Dockerfile
+    image: 203918845423.dkr.ecr.ap-south-1.amazonaws.com/finalproject/server:latest
     container_name: node_backend
     restart: always
     ports:
@@ -15,9 +13,7 @@ services:
       - app_network
 
   frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
+    image: 203918845423.dkr.ecr.ap-south-1.amazonaws.com/finalproject/frontend:latest
     container_name: react_frontend
     restart: always
     ports:
