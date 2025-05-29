@@ -21,7 +21,7 @@ services:
     container_name: react_frontend
     restart: always
     ports:
-      - "5001:3000"
+      - "5001:5000"
     stdin_open: true
     tty: true
     env_file:
