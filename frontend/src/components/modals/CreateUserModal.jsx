@@ -58,7 +58,7 @@ function CreateUserModal({ addUser }) {
         id="button"
         data-bs-target="#CreateUserModal"
       >
-        <b>Create User</b>
+        <b>Create Users</b>
       </button>
 
       <div
