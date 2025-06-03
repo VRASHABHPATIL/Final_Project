@@ -30,7 +30,7 @@ pipeline {
         stage('Build Frontend Image') {
             steps {
                 sh '''
-                    docker build -t frontend-image ./Final_Project/frontend
+                    docker build -t frontend-image ./frontend
                     docker tag frontend-image:latest $FRONTEND_IMAGE
                 '''
             }
@@ -39,7 +39,7 @@ pipeline {
         stage('Build Backend Image') {
             steps {
                 sh '''
-                    docker build -t backend-image ./Final_Project/server
+                    docker build -t backend-image ./server
                     docker tag backend-image:latest $BACKEND_IMAGE
                 '''
             }
