@@ -1,0 +1,66 @@
+pipeline {
+    agent { label 'agent1' }
+
+    environment {
+        AWS_REGION = 'ap-south-1'
+        ECR_REGISTRY = '203918845423.dkr.ecr.ap-south-1.amazonaws.com'
+        GIT_REPO = 'https://github.com/VRASHABHPATIL/Final_Project.git'
+        GIT_BRANCH = 'main'
+        EC2_HOST = 'ubuntu@15.206.153.11' 
+    }
+
+    stages {
+        stage('Deploy on EC2 via SSH') {
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(credentialsId: 'sshkey', keyFileVariable: 'SSH_KEY'),
+                    string(credentialsId: 'acess_id', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'acess_secret', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -i $SSH_KEY $EC2_HOST << EOF
+                        set -e
+
+                        # Update and install docker, docker-compose, awscli, git
+                        sudo apt-get update -y
+                        sudo apt-get install -y docker.io docker-compose awscli git
+
+                        sudo systemctl start docker
+                        sudo systemctl enable docker
+
+                        # Add current user to docker group (ignore errors)
+                        sudo usermod -aG docker \$(whoami) || true
+                        newgrp docker
+
+                        # Setup AWS CLI credentials
+                        mkdir -p ~/.aws
+                        echo '[default]' > ~/.aws/config
+                        echo 'region = ${AWS_REGION}' >> ~/.aws/config
+                        echo 'output = json' >> ~/.aws/config
+
+                        echo '[default]' > ~/.aws/credentials
+                        echo 'aws_access_key_id = ${AWS_ACCESS_KEY_ID}' >> ~/.aws/credentials
+                        echo 'aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}' >> ~/.aws/credentials
+
+                        # Login to ECR
+                        aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+
+                        # Clone repo and checkout branch
+                        rm -rf Final_Project || true
+                        git clone -b ${GIT_BRANCH} ${GIT_REPO}
+
+                        # Deploy with docker-compose
+                        cd Final_Project
+                        docker-compose down
+                        docker-compose pull
+                        docker-compose up -d
+
+                        exit
+EOF
+                    """
+                }
+            }
+        }
+    }
+}
+
