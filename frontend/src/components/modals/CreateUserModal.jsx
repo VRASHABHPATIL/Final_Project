@@ -29,7 +29,7 @@ function CreateUserModal({ addUser }) {
 
     try {
       //post req to server
-      const res = await axios.post("http://13.201.71.142:3000/", {
+      const res = await axios.post("http://15.206.153.11:3000/", {
         name,
         email
       });

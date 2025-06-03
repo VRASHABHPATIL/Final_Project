@@ -24,7 +24,7 @@ function DeleteUserModal() {
       //delete req to the server with data payload
       const res = await axios.request({
         method: "delete",
-        url: "http://13.201.71.142:3000/",
+        url: "http://15.206.153.11:3000/",
         data: { id }
       });
 
