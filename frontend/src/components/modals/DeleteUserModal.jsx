@@ -58,7 +58,7 @@ function DeleteUserModal() {
         id="button"
         data-bs-target="#DeleteUserModal"
       >
-        <b>Delete User</b>
+        <b>Delete User intimetec</b>
       </button>
 
       <div
